@@ -201,7 +201,7 @@ def mostrar_temperatura(B):
 
 # Función para calcular el desgaste del cable en función del tiempo t
 def calcular_desgaste():
-    t_vals = np.linspace(0, 10, 400)
+    t_vals = np.linspace(0, 20, 400)
     d = -4/5 * t_vals + 12
     return t_vals, d
 

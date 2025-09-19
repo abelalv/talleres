@@ -175,7 +175,7 @@ def resolver_ecuacion_cuadratica(a, b, c):
 # -------------------------------------------------------------------------------------
 # Función para calcular la temperatura en función del flujo de datos D
 def calcular_temperatura(B):
-    D = np.linspace(0, 10, 400)
+    D = np.linspace(0, 15, 400)
     T = 6 * D + B
     return D, T
 
@@ -232,7 +232,7 @@ def interactuar_con_temperatura_2():
 def interactuar_con_desgaste_2():
     return interact(
         mostrar_desgaste, 
-        D_c=FloatSlider(value=5, min=0, max=20, step=0.1, description='Capacidad Crítica D_c')
+        D_c=FloatSlider(value=5, min=0, max=12, step=0.1, description='Capacidad Crítica D_c')
     )
 
 # Funciones auxiliares para Python 4

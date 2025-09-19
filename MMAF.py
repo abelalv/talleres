@@ -184,8 +184,8 @@ def mostrar_temperatura(B):
     D, T = calcular_temperatura(B)
     
     plt.figure(figsize=(8, 4))
-    plt.plot(D, T, 'm-', lw=2, label='T(D) = 8D + B')
-    plt.axhline(50, color='k', linestyle='--', label='T_c = 50°C')
+    plt.plot(D, T, 'm-', lw=2, label='T(D) = 6D + B')
+    plt.axhline(50, color='k', linestyle='--', label='T_c = 60°C')
     plt.xlabel('Flujo de datos D')
     plt.ylabel('Temperatura T (°C)')
     plt.title('Función de Temperatura del Cable')
@@ -196,13 +196,13 @@ def mostrar_temperatura(B):
     plt.show()
 
     # Cálculo del flujo crítico D_c
-    D_c = (50 - B) / 8
+    D_c = (60 - B) / 6
     print(f'Para B = {B:.2f}, el flujo crítico es D_c = {D_c:.2f}')
 
 # Función para calcular el desgaste del cable en función del tiempo t
 def calcular_desgaste():
     t_vals = np.linspace(0, 10, 400)
-    d = -9/10 * t_vals + 10
+    d = -4/5 * t_vals + 12
     return t_vals, d
 
 # Función para mostrar la gráfica del desgaste del cable
@@ -210,7 +210,7 @@ def mostrar_desgaste(D_c):
     t_vals, d = calcular_desgaste()
     
     plt.figure(figsize=(8, 4))
-    plt.plot(t_vals, d, 'b-', lw=2, label='d(t) = -9/10t + 10')
+    plt.plot(t_vals, d, 'b-', lw=2, label='d(t) = -4/5t + 12')
     plt.axhline(D_c, color='r', linestyle='--', label=f'D_c = {D_c:.2f}')
     plt.xlabel('Tiempo t (años)')
     plt.ylabel('Capacidad D(t)')
@@ -222,14 +222,14 @@ def mostrar_desgaste(D_c):
     plt.show()
 
 # Función para la interacción con el slider de temperatura
-def interactuar_con_temperatura():
+def interactuar_con_temperatura_2():
     return interact(
         mostrar_temperatura, 
         B=FloatSlider(value=10, min=0, max=20, step=0.5, description='Parámetro B')
     )
 
 # Función para la interacción con el slider de desgaste
-def interactuar_con_desgaste():
+def interactuar_con_desgaste_2():
     return interact(
         mostrar_desgaste, 
         D_c=FloatSlider(value=5, min=0, max=10, step=0.1, description='Capacidad Crítica D_c')

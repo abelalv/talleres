@@ -582,7 +582,7 @@ def visualizar_crecimiento_cancer():
     # Configura los controles y permite visualizar la simulación del crecimiento celular.
     Td_slider = FloatSlider(value=3, min=1, max=10, step=0.5, description="Td:")
     N0_slider = IntSlider(value=100, min=50, max=500, step=10, description="N0:")
-    K_slider = IntSlider(value=1000, min=analizar_diferencia_de_cubos500, max=2000, step=100, description="K:")
+    K_slider = IntSlider(value=1000, min= 500, max=2000, step=100, description="K:")
     A_slider = FloatSlider(value=9, min=1, max=20, step=1, description="A:")
     r_slider = FloatSlider(value=0.2, min=0.05, max=1.0, step=0.05, description="r:")
     Tf_slider = IntSlider(value=30, min=10, max=60, step=5, description="Tf:")
@@ -1314,8 +1314,3 @@ def interactive_efficiency(default_n=500, default_T=100, max_n=10000):
     out = interactive_output(plot_efficiency, {'n_max': n_slider, 'T': T_slider})
 
     display(ui, out)
-
-
-
-
-

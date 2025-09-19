@@ -218,7 +218,7 @@ def mostrar_desgaste(D_c):
     plt.legend()
     plt.grid(True, which='both', linestyle='--', linewidth=0.5)
     plt.xticks(np.arange(0, 15, 1))
-    plt.yticks(np.arange(0, 20, 1))
+    plt.yticks(np.arange(0, 30, 1))
     plt.show()
 
 # Función para la interacción con el slider de temperatura

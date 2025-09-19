@@ -232,7 +232,7 @@ def interactuar_con_temperatura_2():
 def interactuar_con_desgaste_2():
     return interact(
         mostrar_desgaste, 
-        D_c=FloatSlider(value=5, min=0, max=10, step=0.1, description='Capacidad Crítica D_c')
+        D_c=FloatSlider(value=5, min=0, max=20, step=0.1, description='Capacidad Crítica D_c')
     )
 
 # Funciones auxiliares para Python 4

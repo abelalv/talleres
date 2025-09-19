@@ -185,7 +185,7 @@ def mostrar_temperatura(B):
     
     plt.figure(figsize=(8, 4))
     plt.plot(D, T, 'm-', lw=2, label='T(D) = 6D + B')
-    plt.axhline(50, color='k', linestyle='--', label='T_c = 60°C')
+    plt.axhline(60, color='k', linestyle='--', label='T_c = 60°C')
     plt.xlabel('Flujo de datos D')
     plt.ylabel('Temperatura T (°C)')
     plt.title('Función de Temperatura del Cable')

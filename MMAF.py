@@ -225,7 +225,7 @@ def mostrar_desgaste(D_c):
 def interactuar_con_temperatura_2():
     return interact(
         mostrar_temperatura, 
-        B=FloatSlider(value=10, min=0, max=20, step=0.5, description='Parámetro B')
+        B=FloatSlider(value=10, min=0, max=30, step=0.5, description='Parámetro B')
     )
 
 # Función para la interacción con el slider de desgaste

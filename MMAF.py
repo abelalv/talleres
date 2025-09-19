@@ -201,7 +201,7 @@ def mostrar_temperatura(B):
 
 # Función para calcular el desgaste del cable en función del tiempo t
 def calcular_desgaste():
-    t_vals = np.linspace(0, 20, 400)
+    t_vals = np.linspace(0, 10, 400)
     d = -4/5 * t_vals + 12
     return t_vals, d
 
@@ -217,8 +217,8 @@ def mostrar_desgaste(D_c):
     plt.title('Función de Capacidad máxima de transmisión del Cable')
     plt.legend()
     plt.grid(True, which='both', linestyle='--', linewidth=0.5)
-    plt.xticks(np.arange(0, 20, 1))
-    plt.yticks(np.arange(0, 15, 1))
+    plt.xticks(np.arange(0, 15, 1))
+    plt.yticks(np.arange(0, 20, 1))
     plt.show()
 
 # Función para la interacción con el slider de temperatura

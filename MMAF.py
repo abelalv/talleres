@@ -176,7 +176,7 @@ def resolver_ecuacion_cuadratica(a, b, c):
 # Función para calcular la temperatura en función del flujo de datos D
 def calcular_temperatura(B):
     D = np.linspace(0, 10, 400)
-    T = 8 * D + B
+    T = 6 * D + B
     return D, T
 
 # Función para mostrar la gráfica de la temperatura y el flujo crítico

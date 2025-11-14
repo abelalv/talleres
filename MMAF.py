@@ -175,8 +175,8 @@ def resolver_ecuacion_cuadratica(a, b, c):
 # -------------------------------------------------------------------------------------
 # Función para calcular la temperatura en función del flujo de datos D
 def calcular_temperatura(B):
-    D = np.linspace(0, 15, 400)
-    T = 6 * D + B
+    D = np.linspace(0, 10, 400)
+    T = 8 * D + B
     return D, T
 
 # Función para mostrar la gráfica de la temperatura y el flujo crítico
@@ -184,8 +184,8 @@ def mostrar_temperatura(B):
     D, T = calcular_temperatura(B)
     
     plt.figure(figsize=(8, 4))
-    plt.plot(D, T, 'm-', lw=2, label='T(D) = 6D + B')
-    plt.axhline(60, color='k', linestyle='--', label='T_c = 60°C')
+    plt.plot(D, T, 'm-', lw=2, label='T(D) = 8D + B')
+    plt.axhline(50, color='k', linestyle='--', label='T_c = 50°C')
     plt.xlabel('Flujo de datos D')
     plt.ylabel('Temperatura T (°C)')
     plt.title('Función de Temperatura del Cable')
@@ -196,13 +196,13 @@ def mostrar_temperatura(B):
     plt.show()
 
     # Cálculo del flujo crítico D_c
-    D_c = (60 - B) / 6
+    D_c = (50 - B) / 8
     print(f'Para B = {B:.2f}, el flujo crítico es D_c = {D_c:.2f}')
 
 # Función para calcular el desgaste del cable en función del tiempo t
 def calcular_desgaste():
-    t_vals = np.linspace(0, 15, 400)
-    d = -4/5 * t_vals + 12
+    t_vals = np.linspace(0, 10, 400)
+    d = -9/10 * t_vals + 10
     return t_vals, d
 
 # Función para mostrar la gráfica del desgaste del cable
@@ -210,29 +210,29 @@ def mostrar_desgaste(D_c):
     t_vals, d = calcular_desgaste()
     
     plt.figure(figsize=(8, 4))
-    plt.plot(t_vals, d, 'b-', lw=2, label='d(t) = -4/5t + 12')
+    plt.plot(t_vals, d, 'b-', lw=2, label='d(t) = -9/10t + 10')
     plt.axhline(D_c, color='r', linestyle='--', label=f'D_c = {D_c:.2f}')
     plt.xlabel('Tiempo t (años)')
     plt.ylabel('Capacidad D(t)')
     plt.title('Función de Capacidad máxima de transmisión del Cable')
     plt.legend()
     plt.grid(True, which='both', linestyle='--', linewidth=0.5)
-    plt.xticks(np.arange(0, 15, 1))
-    plt.yticks(np.arange(0, 30, 1))
+    plt.xticks(np.arange(0, 11, 1))
+    plt.yticks(np.arange(0, 11, 1))
     plt.show()
 
 # Función para la interacción con el slider de temperatura
-def interactuar_con_temperatura_2():
+def interactuar_con_temperatura():
     return interact(
         mostrar_temperatura, 
-        B=FloatSlider(value=10, min=0, max=30, step=0.5, description='Parámetro B')
+        B=FloatSlider(value=10, min=0, max=20, step=0.5, description='Parámetro B')
     )
 
 # Función para la interacción con el slider de desgaste
-def interactuar_con_desgaste_2():
+def interactuar_con_desgaste():
     return interact(
         mostrar_desgaste, 
-        D_c=FloatSlider(value=5, min=0, max=12, step=0.1, description='Capacidad Crítica D_c')
+        D_c=FloatSlider(value=5, min=0, max=10, step=0.1, description='Capacidad Crítica D_c')
     )
 
 # Funciones auxiliares para Python 4
@@ -529,7 +529,7 @@ def interactuar(C_g):
 
     plt.xlabel('Posición a lo largo de la viga (m)')
     plt.ylabel('Deflexión (cm)')
-    plt.title('Flexión de la viga en volaanalizar_diferencia_de_cubosdizo')
+    plt.title('Flexión de la viga en voladizo')
     plt.legend()
     plt.grid(True)
     plt.xlim(0, 20)
@@ -582,7 +582,7 @@ def visualizar_crecimiento_cancer():
     # Configura los controles y permite visualizar la simulación del crecimiento celular.
     Td_slider = FloatSlider(value=3, min=1, max=10, step=0.5, description="Td:")
     N0_slider = IntSlider(value=100, min=50, max=500, step=10, description="N0:")
-    K_slider = IntSlider(value=1000, min= 500, max=2000, step=100, description="K:")
+    K_slider = IntSlider(value=1000, min=500, max=2000, step=100, description="K:")
     A_slider = FloatSlider(value=9, min=1, max=20, step=1, description="A:")
     r_slider = FloatSlider(value=0.2, min=0.05, max=1.0, step=0.05, description="r:")
     Tf_slider = IntSlider(value=30, min=10, max=60, step=5, description="Tf:")
@@ -598,81 +598,112 @@ def visualizar_crecimiento_cancer():
 
 # Funciones Actividad 7 (Modelo de conexiones satelitales)
 # ------------------------------------------------------------------------------------
-def push_radially(pt, factor=1.22):
-    # escala radial
+
+# Funciones geométricas
+
+def push_radially(pt, factor=1.15):
+    """Desplaza un punto radialmente hacia fuera (para ubicar etiquetas)."""
     return np.array(pt) * factor
 
-def surface_coverage_distance(h):
-    # distancia superficial lineal
-    R = 6378  # km
+
+def surface_coverage_distance(h, R=6378):
+    """Distancia lineal sobre la superficie visible desde altura h."""
     return np.sqrt((R + h)**2 - R**2)
 
-def required_threshold(D, m):
-    # umbral requerido
-    return D/2 + m
 
-def view_angle(h):
-    # ángulo de visión
-    R = 6378
+def required_threshold(D, m):
+    """Umbral mínimo de cobertura requerido."""
+    return D / 2 + m
+
+
+def view_angle(h, R=6378):
+    """Ángulo de visión en radianes desde el centro terrestre."""
     return np.arccos(R / (R + h))
 
+# Gráfico del sistema
+
 def plot_satellite(D, h, m):
-    # dibuja Tierra, ciudades y cobertura
+    """
+    Dibuja Tierra, Quibdó–Mitú, satélite y zona de cobertura.
+    Parámetros:
+        D : distancia superficial entre ciudades (km)
+        h : altura orbital (km)
+        m : margen de cobertura (km)
+    """
     R = 6378
     theta0 = 7.6 * np.pi / 180
-    d = surface_coverage_distance(h)
-    th_view = view_angle(h)
+    d = surface_coverage_distance(h, R)
+    th_view = view_angle(h, R)
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(6, 6))
     ax.set_aspect('equal')
 
-    # tierra
-    ax.add_patch(plt.Circle((0, 0), R, color='lightblue', alpha=0.4))
+    # --- Tierra ---
+    ax.add_patch(plt.Circle((0, 0), R, color='lightblue', alpha=0.4, label='Tierra'))
 
-    # ciudades
+    # --- Ciudades ---
     half = theta0 / 2
     Q = [R * np.cos(half), R * np.sin(half)]
     M = [R * np.cos(-half), R * np.sin(-half)]
-    ax.plot(*Q, 'ko'); ax.text(*push_radially(Q), 'Quibdó')
-    ax.plot(*M, 'ko'); ax.text(*push_radially(M), 'Mitú')
+    ax.plot(*Q, 'ko')
+    ax.plot(*M, 'ko')
+    ax.text(*push_radially(Q), 'Quibdó', fontsize=9)
+    ax.text(*push_radially(M), 'Mitú', fontsize=9)
 
-    # satélite
+    # --- Satélite ---
     sat = [R + h, 0]
-    ax.plot(*sat, 'ro'); ax.text(*push_radially(sat, 1.03), 'SAT')
+    ax.plot(*sat, 'ro')
 
-    # altura
-    ax.text(0.98, 0.95, f'h={h:.0f} km', transform=ax.transAxes,
-            ha='right', va='top', bbox=dict(facecolor='white', alpha=0.7))
+    # Etiqueta ligeramente más arriba
+    label_offset = 700  # km
+    ax.text(sat[0], sat[1] + label_offset, f"SAT\nh={h:.0f} km", color='red', ha='center', fontsize=9, bbox=dict(facecolor='white', alpha=0.7))
 
-    # cobertura
-    phi = np.linspace(-th_view, th_view, 400)
-    ax.plot(R * np.cos(phi), R * np.sin(phi), 'r--')
+    # --- Cono de cobertura ---
+    phi = np.linspace(-th_view, th_view, 200)
+    coverage_edge = R * np.exp(1j * phi)  # puntos del borde visible
+    ax.plot(coverage_edge.real, coverage_edge.imag, 'r--', label='Zona visible')
 
-    # límites
+    # --- Líneas del cono de visión ---
+    ax.plot([R * np.cos(th_view), R + h],
+            [R * np.sin(th_view), 0], 'r:', alpha=0.7)
+    ax.plot([R * np.cos(-th_view), R + h],
+            [R * np.sin(-th_view), 0], 'r:', alpha=0.7)
+
+    # --- Límites del gráfico ---
     mrg = 2200
-    ax.set_xlim(-R - mrg, R + mrg); ax.set_ylim(-R - mrg, R + mrg)
-    ax.set_xlabel('km'); ax.set_ylabel('km')
-    ax.set_title(f'd={d:.0f} km (req ≥ {required_threshold(D, m):.0f})')
+    ax.set_xlim(-R - mrg, R + mrg)
+    ax.set_ylim(-R - mrg, R + mrg)
+    ax.set_xlabel('km')
+    ax.set_ylabel('km')
+
+    # --- Información ---
+    ax.set_title(f"Distancia visible d={d:.0f} km — Requerida ≥ {required_threshold(D, m):.0f} km",
+                 fontsize=10)
+    ax.legend(loc='lower left', fontsize=8)
     ax.grid(True)
     plt.show()
 
+# Interfaz interactiva
+
 def create_widgets():
-    # widgets
+    """Crea los widgets de entrada."""
     R = 6378
     theta0 = 7.6 * np.pi / 180
     D_pred = R * theta0
     D_text = FloatText(value=np.round(D_pred, 2), description='D (km):')
-    h_slider = FloatSlider(value=500, min=100, max=1200, step=10, description='h (km):')
-    m_slider = FloatSlider(value=0, min=0, max=300, step=10, description='margen (km):')
+    h_slider = FloatSlider(value=500, min=100, max=1200, step=10, description='Altura h (km):')
+    m_slider = FloatSlider(value=0, min=0, max=300, step=10, description='Margen m (km):')
     return D_text, h_slider, m_slider
 
-def build_interface_satelite():
-    # interfaz interactiva
+
+def build_interface_satellite():
+    """Construye y muestra la interfaz completa."""
     D_text, h_slider, m_slider = create_widgets()
     ui = VBox([HBox([D_text]), h_slider, m_slider])
     out = interactive_output(plot_satellite,
                              {'D': D_text, 'h': h_slider, 'm': m_slider})
     display(ui, out)
+
 
 # -------------------------------------------------------------------------------------
 # Funciones Herramientas Computacionales 7
@@ -697,6 +728,53 @@ def plot_sine(desfase=0):
     plt.grid(True)
     plt.show()
 
+def interactivo_desfase_seno(v = 0):
+    """
+    Muestra un control interactivo (slider) que permite variar el desfase
+    en la función seno y visualizar su efecto en tiempo real.
+    """
+    desfase_slider = FloatSlider(min=0, max=4*np.pi, step=0.1, value=v, description='Desfase')
+    interact(plot_sine, desfase=desfase_slider)
+
+def graficar_seno_coseno_desfase(desfase):
+    """
+    Grafica el coseno fijo y el seno desplazado por un desfase dado.
+    Permite visualizar que cos(x) = sin(x + π/2).
+    """
+    x = np.linspace(-3 * np.pi, 3 * np.pi, 1000)
+    y_cos = np.cos(x)
+    y_seno = np.sin(x + desfase)
+
+    plt.figure(figsize=(10, 5))
+    plt.plot(x, y_cos, label=r"$\cos(x)$ (fija)", color='blue', linestyle='--', alpha=0.7)
+    plt.plot(x, y_seno, label=fr"$\sin(x + {desfase:.2f})$", color='purple')
+
+    plt.title(fr"Comparación entre $\sin(x + \phi)$ y $\cos(x)$   (Desfase = {desfase:.2f} rad)")
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.xlim(-3*np.pi, 3*np.pi)
+    plt.xticks(
+        [-3*np.pi, -2*np.pi, -np.pi, 0, np.pi, 2*np.pi, 3*np.pi],
+        [r"$-3\pi$", r"$-2\pi$", r"$-\pi$", "0", r"$\pi$", r"$2\pi$", r"$3\pi$"]
+    )
+    plt.grid(True, linestyle=':', alpha=0.6)
+    plt.legend(loc="upper right")
+    plt.tight_layout()
+    plt.show()
+
+
+def interactivo_seno_coseno_desfase(valor_inicial=0):
+    """
+    Crea un control interactivo para explorar la relación entre seno y coseno
+    mediante el desfase. El coseno permanece fijo mientras el seno se desplaza.
+    """
+    desfase_slider = FloatSlider(
+        min=-2*np.pi, max=2*np.pi, step=0.1,
+        value=valor_inicial, description='Desfase'
+    )
+    interact(graficar_seno_coseno_desfase, desfase=desfase_slider)
+
+
 # Función para graficar la onda seno con amplitud, frecuencia, desfase y término constante
 def graficar_seno(amplitud, frecuencia, desfase, constante):
     # Definir el rango de los valores de x
@@ -717,6 +795,27 @@ def graficar_seno(amplitud, frecuencia, desfase, constante):
     plt.grid(True)
     plt.legend(loc="upper right")
     plt.show()
+
+def interactivo_seno():
+    """
+    Crea un control interactivo que permite modificar los parámetros
+    de la función seno generalizada y observar los efectos en la gráfica.
+
+    Parámetros controlados:
+    - Amplitud (A): altura máxima de la onda.
+    - Frecuencia (B): número de ciclos por unidad.
+    - Desfase (C): desplazamiento horizontal (en radianes).
+    - Constante (D): desplazamiento vertical.
+
+    Utiliza internamente la función graficar_seno(A, B, C, D).
+    """
+    interact(
+        graficar_seno,
+        amplitud=(1.0, 10.0, 0.1),
+        frecuencia=(0.1, 5.0, 0.1),
+        desfase=(-np.pi, np.pi, 0.1),
+        constante=(-5.0, 5.0, 0.1)
+    )
 
 # Función para graficar la onda coseno con amplitud, frecuencia, desfase y término constante
 def graficar_coseno(amplitud, frecuencia, desfase, constante):
@@ -739,6 +838,26 @@ def graficar_coseno(amplitud, frecuencia, desfase, constante):
     plt.legend(loc="upper right")
     plt.show()
 
+def interactivo_coseno():
+    """
+    Crea un control interactivo que permite modificar los parámetros
+    de la función coseno generalizada y observar su efecto en la gráfica.
+
+    Parámetros controlados:
+    - amplitud (A): controla la altura máxima de la onda.
+    - frecuencia (B): controla el número de ciclos por unidad.
+    - desfase (C): desplazamiento horizontal (en radianes).
+    - constante (D): desplazamiento vertical.
+
+    Esta función utiliza internamente `graficar_coseno(A, B, C, D)` definida en la librería.
+    """
+    interact(
+        graficar_coseno,
+        amplitud=(1.0, 10.0, 0.1),
+        frecuencia=(0.1, 5.0, 0.1),
+        desfase=(-np.pi, np.pi, 0.1),
+        constante=(-5.0, 5.0, 0.1)
+    )
 
 # Función para graficar la onda tangente con amplitud, frecuencia, desfase y término constante
 def graficar_tangente(amplitud, frecuencia, desfase, constante):
@@ -769,400 +888,334 @@ def graficar_tangente(amplitud, frecuencia, desfase, constante):
     plt.legend(loc="upper right")
     plt.show()
 
-# Función para graficar la onda seno con desfase, con el coseno fijo de fondo
-def graficar_seno_desfase(desfase):
-    # Definir el rango de los valores de x
-    x = np.linspace(-3 * np.pi, 3 * np.pi, 1000)  # De -2π a 2π para ver varios ciclos
+def interactivo_tangente():
+    """
+    Crea un control interactivo que permite modificar los parámetros
+    de la función tangente generalizada y observar su efecto en la gráfica.
 
-    # Calcular los valores de y para la función seno y coseno
-    y_seno = np.sin(x + desfase)  # Función seno con desfase
-    y_cos = np.cos(x)             # Función coseno fija
+    Parámetros controlados:
+    - amplitud (A): controla la escala vertical de la tangente.
+    - frecuencia (B): controla el número de ciclos por unidad.
+    - desfase (C): desplazamiento horizontal (en radianes).
+    - constante (D): desplazamiento vertical.
 
-    # Limpiar la figura
-    plt.figure(figsize=(10, 5))
+    Esta función utiliza internamente `graficar_tangente(A, B, C, D)` definida en la librería.
+    """
+    interact(
+        graficar_tangente,
+        amplitud=(1.0, 5.0, 0.1),
+        frecuencia=(0.1, 5.0, 0.1),
+        desfase=(-np.pi, np.pi, 0.1),
+        constante=(-5.0, 5.0, 0.1)
+    )
 
-    # Graficar la función coseno como fondo
-    plt.plot(x, y_cos, label=f"$\\cos(x)$ (fija)", color='blue', linestyle='--', alpha=0.7)
+def grados_a_radianes(grados):
+    """
+    Convierte grados a radianes y muestra el resultado en texto y en una gráfica sencilla.
+    """
+    radianes = grados * np.pi / 180
+    
+    # Mostrar el resultado numérico
+    print(f"{grados:.2f}° equivalen a {radianes:.4f} radianes")
 
-    # Graficar la función seno con el desfase ajustado
-    plt.plot(x, y_seno, label=f"$\\sin(x + {desfase:.2f})$", color='purple')
 
-    # Ajustar título y etiquetas
-    plt.title(f"Función Seno con Desfase: Desfase = {desfase:.2f} rad")
-    plt.xlabel("x")
-    plt.ylabel("y")
-    plt.xlim(-3*np.pi,3*np.pi)
-    plt.xticks([-3 * np.pi,-2 * np.pi, -np.pi, 0, np.pi, 2 * np.pi,3 * np.pi], 
-               [r'$-3\pi$',r'$-2\pi$', r'$-\pi$', '0', r'$\pi$', r'$2\pi$',r'$3\pi$'])
-    plt.grid(True)
+def interactive_grados_a_radianes(valor_inicial=0):
+    """
+    Crea un control interactivo que permite convertir grados a radianes.
+    """
+    slider = FloatSlider(
+        min=0, max=360, step=1, value=valor_inicial,
+        description='Grados', continuous_update=True
+    )
+    interact(grados_a_radianes, grados=slider)
 
-    plt.legend(loc="upper right")
+# Definición de funciones trigonométricas recíprocas
+def sec(x):
+    """Función secante"""
+    return np.where(np.cos(x) != 0, 1 / np.cos(x), np.nan)
+
+def csc(x):
+    """Función cosecante"""
+    return np.where(np.sin(x) != 0, 1 / np.sin(x), np.nan)
+
+def cot(x):
+    """Función cotangente"""
+    return np.where(np.tan(x) != 0, 1 / np.tan(x), np.nan)
+
+
+def graficar_funciones_trigonometricas_extra():
+    """
+    Grafica las funciones trigonométricas recíprocas:
+    secante, cosecante y cotangente, en el intervalo [-2π, 2π].
+    """
+
+    # Rango de valores de x
+    x = np.linspace(-2 * np.pi, 2 * np.pi, 2000)
+
+    # Asociar cada función con su color y nombre
+    funciones = {
+        r"$\sec(x)$": (sec, 'royalblue'),
+        r"$\csc(x)$": (csc, 'seagreen'),
+        r"$\cot(x)$": (cot, 'darkviolet')
+    }
+
+    # Crear figura con 3 subgráficas verticales
+    fig, axes = plt.subplots(3, 1, figsize=(10, 12), sharex=True)
+
+    # Iterar sobre funciones y ejes
+    for ax, (nombre, (f, color)) in zip(axes, funciones.items()):
+        y = f(x)
+        ax.plot(x, y, color=color, linewidth=2, label=nombre)
+
+        # Ejes de referencia
+        ax.axhline(0, color='black', linewidth=1)
+        ax.axvline(0, color='black', linewidth=1)
+
+        # Límites y formato
+        ax.set_ylim(-10, 10)
+        ax.set_title(f"Gráfica de {nombre}", fontsize=15)
+        ax.legend()
+        ax.grid(True)
+
+        # Eje x en radianes
+        ax.set_xticks([
+            -2*np.pi, -3*np.pi/2, -np.pi, -np.pi/2, 0,
+            np.pi/2, np.pi, 3*np.pi/2, 2*np.pi
+        ])
+        ax.set_xticklabels([
+            r'$-2\pi$', r'$-\frac{3\pi}{2}$', r'$-\pi$', r'$-\frac{\pi}{2}$',
+            '0', r'$\frac{\pi}{2}$', r'$\pi$', r'$\frac{3\pi}{2}$', r'$2\pi$'
+        ])
+
+    plt.xlabel("x (radianes)", fontsize=12)
+    plt.tight_layout()
     plt.show()
 
-# Función para graficar las funciones trigonométricas inversas con una cuadrícula cuadrada
-def graficar_inversas():
-    # Definir el rango de x para las funciones inversas
-    x_sin_cos = np.linspace(-1, 1, 1000)
-    x_tan = np.linspace(-10, 10, 1000)
+def identidad_pitagorica(theta_deg: float = 0):
+    """
+    Visualiza la identidad pitagórica: sin²(θ) + cos²(θ) = 1
+    mediante un círculo unitario y el triángulo correspondiente
+    al ángulo θ.
 
-    # Calcular las funciones inversas
+    Parámetros:
+    -----------
+    theta_deg : float
+        Ángulo en grados (0° a 360°)
+    """
+    
+    # Conversión a radianes
+    theta_rad = np.deg2rad(theta_deg)
+
+    # Cálculo de seno y coseno
+    seno = np.sin(theta_rad)
+    coseno = np.cos(theta_rad)
+    identidad = seno**2 + coseno**2  # debería ser ≈ 1
+
+    # Configuración de la figura
+    plt.figure(figsize=(6, 6))
+    ax = plt.gca()
+    ax.set_aspect('equal')
+
+    # Dibujar el círculo unitario
+    circle = plt.Circle((0, 0), 1, color='lightblue', fill=False, linewidth=2)
+    ax.add_patch(circle)
+
+    # Dibujar triángulo (radio, proyección en x, proyección en y)
+    plt.plot([0, coseno], [0, seno], color='k', lw=2, label='Radio = 1')
+    plt.plot([coseno, coseno], [0, seno], 'g--', lw=1)
+    plt.plot([0, coseno], [0, 0], 'b--', lw=1)
+
+    # Dibujar punto sobre el círculo
+    plt.scatter(coseno, seno, color='red', s=60, zorder=5)
+
+    # Etiquetas explicativas
+    plt.text(0.05, 1.1, f"$\\sin^2(\\theta) + \\cos^2(\\theta) = {identidad:.2f}$",
+             fontsize=12, color='darkred')
+    plt.text(coseno / 2, -0.15, f"$\\cos(\\theta) = {coseno:.2f}$", fontsize=11, color='green')
+    plt.text(0.05, seno / 2, f"$\\sin(\\theta) = {seno:.2f}$", fontsize=11, color='blue')
+
+    # Decoración de los ejes
+    plt.axhline(0, color='black', linewidth=1)
+    plt.axvline(0, color='black', linewidth=1)
+    plt.xlim(-1.5, 1.5)
+    plt.ylim(-1.5, 1.5)
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.title(f"Identidad Pitagórica — $\\theta = {theta_deg}^\\circ$", fontsize=14)
+    plt.legend(loc='upper right')
+    plt.show()
+
+
+def interactivo_identidad_pitagorica():
+    """
+    Crea un control interactivo para explorar la identidad pitagórica
+    variando el ángulo θ en grados.
+    """
+    interact(identidad_pitagorica, theta_deg=(0, 360, 1))
+
+def graficar_inversas():
+    """
+    Grafica las funciones trigonométricas inversas: arcsin(x), arccos(x) y arctan(x)
+    con escalas iguales y etiquetas matemáticas en los ejes.
+    """
+
+    # --- RANGOS DE LAS FUNCIONES ---
+    x_sin_cos = np.linspace(-1, 1, 1000)     # Dominio válido para arcsin y arccos
+    x_tan = np.linspace(-10, 10, 1000)       # Rango amplio para arctan
+
+    # --- CÁLCULO DE LAS FUNCIONES ---
     y_arcsin = np.arcsin(x_sin_cos)
     y_arccos = np.arccos(x_sin_cos)
     y_arctan = np.arctan(x_tan)
 
-    # Crear la figura con tres subgráficos (uno para cada función)
-    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(8, 12))
+    # --- CREACIÓN DE LA FIGURA ---
+    fig, axes = plt.subplots(3, 1, figsize=(8, 12))
+    funciones = [
+        (x_sin_cos, y_arcsin,  r"$\arcsin(x)$", "Función Inversa del Seno",   [-np.pi/2, 0, np.pi/2], [r"$-\frac{\pi}{2}$", "0", r"$\frac{\pi}{2}$"], 'blue'),
+        (x_sin_cos, y_arccos,  r"$\arccos(x)$", "Función Inversa del Coseno", [0, np.pi/2, np.pi], ["0", r"$\frac{\pi}{2}$", r"$\pi$"], 'green'),
+        (x_tan,     y_arctan,  r"$\arctan(x)$", "Función Inversa de la Tangente", [-np.pi/2, 0, np.pi/2], [r"$-\frac{\pi}{2}$", "0", r"$\frac{\pi}{2}$"], 'purple')
+    ]
 
-    # Graficar la función arcsin(x)
-    ax1.plot(x_sin_cos, y_arcsin, label=r"$\arcsin(x)$", color='blue', linewidth=2)
-    ax1.set_title("Función Inversa del Seno", fontsize=14)
-    ax1.set_xlabel("x", fontsize=12)
-    ax1.set_ylabel("y", fontsize=12)
-    ax1.grid(True)
-    ax1.set_aspect('equal')  # Cuadrícula cuadrada
-    ax1.legend(fontsize=12)
-    
-    # Etiquetas del eje y para arcsin
-    ax1.set_yticks([-np.pi/2, 0, np.pi/2])
-    ax1.set_yticklabels([r"$-\frac{\pi}{2}$", "0", r"$\frac{\pi}{2}$"])
+    # --- GRAFICAR CADA FUNCIÓN ---
+    for ax, (x, y, label, titulo, yticks, ylabels, color) in zip(axes, funciones):
+        ax.plot(x, y, color=color, linewidth=2, label=label)
+        ax.set_title(titulo, fontsize=14)
+        ax.set_xlabel("x", fontsize=12)
+        ax.set_ylabel("y", fontsize=12)
+        ax.grid(True, linestyle='--', alpha=0.7)
+        ax.set_aspect('equal')
+        ax.set_yticks(yticks)
+        ax.set_yticklabels(ylabels)
+        ax.legend(fontsize=12, loc='best')
 
-    # Graficar la función arccos(x)
-    ax2.plot(x_sin_cos, y_arccos, label=r"$\arccos(x)$", color='green', linewidth=2)
-    ax2.set_title("Función Inversa del Coseno", fontsize=14)
-    ax2.set_xlabel("x", fontsize=12)
-    ax2.set_ylabel("y", fontsize=12)
-    ax2.grid(True)
-    ax2.set_aspect('equal')  # Cuadrícula cuadrada
-    ax2.legend(fontsize=12)
-    
-    # Etiquetas del eje y para arccos
-    ax2.set_yticks([0, np.pi/2, np.pi])
-    ax2.set_yticklabels(["0", r"$\frac{\pi}{2}$", r"$\pi$"])
-
-    # Graficar la función arctan(x)
-    ax3.plot(x_tan, y_arctan, label=r"$\arctan(x)$", color='purple', linewidth=2)
-    ax3.set_title("Función Inversa de la Tangente", fontsize=14)
-    ax3.set_xlabel("x", fontsize=12)
-    ax3.set_ylabel("y", fontsize=12)
-    ax3.grid(True)
-    ax3.set_aspect('equal')  # Cuadrícula cuadrada
-    ax3.legend(fontsize=12)
-
-    # Etiquetas del eje y para arctan
-    ax3.set_yticks([-np.pi/2, 0, np.pi/2])
-    ax3.set_yticklabels([r"$-\frac{\pi}{2}$", "0", r"$\frac{\pi}{2}$"])
-
-    # Ajustar el espaciado y mostrar las gráficas
+    # --- AJUSTAR Y MOSTRAR ---
     plt.tight_layout()
     plt.show()
 
-# Función para graficar y resolver la ecuación seno
-def resolver_seno(A):
-    # Definir el rango de x (el ángulo θ) en el intervalo [-2π, 2π]
-    x = np.linspace(-2 * np.pi, 2 * np.pi, 1000)
-    
-    # Calcular la función seno
+# Función interactiva para graficar y resolver la ecuación seno: sin(θ) = A
+def resolver_seno(A, tolerancia=0.2):
+    """
+    Grafica la ecuación sin(θ) = A y muestra las soluciones aproximadas
+    en el rango [-2π, 2π]. Agrupa soluciones cercanas dentro de una tolerancia.
+    """
+    # Definir el rango de θ en el intervalo [-2π, 2π]
+    x = np.linspace(-2 * np.pi, 2 * np.pi, 2000)
     y = np.sin(x)
-    
-    # Graficar la función seno
+
+    # Verificar que A esté dentro del rango válido [-1, 1]
+    if A < -1 or A > 1:
+        print("No existen soluciones reales para |A| > 1, ya que el seno está definido entre -1 y 1.")
+        return
+
+    # Crear la figura
     plt.figure(figsize=(10, 6))
-    plt.plot(x, y, label=r"$\sin(\theta)$", color='blue')
-    
-    # Graficar la línea horizontal en y = A
+    plt.plot(x, y, label=r"$\sin(\theta)$", color='blue', linewidth=2)
     plt.axhline(y=A, color='red', linestyle='--', label=f"$y = {A}$")
-    
-    # Encontrar las soluciones gráficamente
-    sol_x = x[np.isclose(y, A, atol=0.01)]
-    
-    # Graficar las soluciones encontradas
+
+    # Encontrar los puntos donde sin(θ) ≈ A
+    sol_indices = np.where(np.isclose(y, A, atol=0.01))[0]
+    sol_x = x[sol_indices]
+
+    # --- Agrupar soluciones cercanas ---
+    sol_x_agrupadas = []
+    if len(sol_x) > 0:
+        grupo_actual = [sol_x[0]]
+        for s in sol_x[1:]:
+            if abs(s - grupo_actual[-1]) < tolerancia:
+                grupo_actual.append(s)
+            else:
+                sol_x_agrupadas.append(np.mean(grupo_actual))
+                grupo_actual = [s]
+        sol_x_agrupadas.append(np.mean(grupo_actual))
+    sol_x = np.array(sol_x_agrupadas)
+
+    # Mostrar las soluciones gráficamente
     for sol in sol_x:
-        plt.plot(sol, A, 'ro')  # Poner un punto en cada solución
-        plt.text(sol, A + 0.05, f"$\\theta = {sol:.2f}$", fontsize=12, color='red')
-    
-    # Ajustar el gráfico
-    plt.title(f"Soluciones de $\\sin(\\theta) = {A}$ en el intervalo $[-2\\pi, 2\\pi]$")
-    plt.xlabel("$\\theta$")
-    plt.ylabel("$\\sin(\\theta)$")
+        plt.plot(sol, A, 'ro')
+        plt.text(sol, A + 0.1, f"$\\theta = {sol:.2f}$", fontsize=11, color='red', ha='center')
+
+    # Ajustes del gráfico
+    plt.title(fr"Soluciones de $\sin(\theta) = {A}$ en el intervalo $[-2\pi, 2\pi]$", fontsize=14)
+    plt.xlabel(r"$\theta$", fontsize=12)
+    plt.ylabel(r"$\sin(\theta)$", fontsize=12)
     plt.xlim(-2 * np.pi, 2 * np.pi)
     plt.ylim(-1.5, 1.5)
-    plt.xticks([-2 * np.pi, -3 * np.pi / 2, -np.pi, -np.pi / 2, 0, np.pi / 2, np.pi, 3 * np.pi / 2, 2 * np.pi],
-               [r'$-2\pi$', r'$-\frac{3\pi}{2}$', r'$-\pi$', r'$-\frac{\pi}{2}$', '0', r'$\frac{\pi}{2}$', r'$\pi$', r'$\frac{3\pi}{2}$', r'$2\pi$'])
-    plt.grid(True)
-    plt.legend()
+    plt.xticks(
+        [-2*np.pi, -3*np.pi/2, -np.pi, -np.pi/2, 0, np.pi/2, np.pi, 3*np.pi/2, 2*np.pi],
+        [r"$-2\pi$", r"$-\frac{3\pi}{2}$", r"$-\pi$", r"$-\frac{\pi}{2}$", "0",
+         r"$\frac{\pi}{2}$", r"$\pi$", r"$\frac{3\pi}{2}$", r"$2\pi$"]
+    )
+    plt.axhline(0, color='black', linewidth=1)
+    plt.axvline(0, color='black', linewidth=1)
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.legend(fontsize=12)
     plt.show()
 
-# Función para graficar la ecuación trigonométrica
-def graficar_funcion_trigonometrica(rango_x=(0, 2 * np.pi), num_puntos=1000, figsize=(8, 6)):
+    # Imprimir soluciones numéricas
+    if len(sol_x) > 0:
+        print(f"Soluciones aproximadas para sin(θ) = {A}:")
+        for sol in sol_x:
+            print(f"  θ ≈ {sol:.2f} rad")
+    else:
+        print("No se encontraron soluciones dentro del rango mostrado.")
+
+
+def interactivo_resolver_seno():
     """
-    Grafica la ecuación 2·sin²(x) − sin(x) − 1 sobre el rango dado y marca
-    los valores x = π/2, 7π/6 y 11π/6.
+    Crea un control interactivo para explorar la ecuación sin(θ) = A.
+    """
+    interact(resolver_seno, A=(-1.0, 1.0, 0.1))
+
+# Función mejorada para graficar una ecuación trigonométrica cuadrática en seno
+def graficar_funcion_trigonometrica(rango_x=(0, 2 * np.pi), num_puntos=1000, figsize=(9, 6)):
+    """
+    Grafica la ecuación 2·sin²(x) − sin(x) − 1 sobre el rango dado,
+    mostrando las soluciones en el intervalo [0, 2π].
 
     Parámetros:
       - rango_x (tuple): Tupla (x_min, x_max) para el dominio.
       - num_puntos (int): Cantidad de puntos para el muestreo en x.
       - figsize (tuple): Tamaño de la figura (ancho, alto).
     """
-    # Definir el rango de x
+    # Definir el rango de x y calcular la función
     x = np.linspace(rango_x[0], rango_x[1], num_puntos)
-    # Evaluar la función
     y = 2 * np.sin(x)**2 - np.sin(x) - 1
 
     # Crear la figura
     plt.figure(figsize=figsize)
-    plt.plot(x, y, label=r"$2\sin^2(x) - \sin(x) - 1$")
-
-    # Líneas auxiliares
+    plt.plot(x, y, color='royalblue', linewidth=2.5, label=r"$f(x) = 2\sin^2(x) - \sin(x) - 1$")
+    
+    # Ejes principales
     plt.axhline(0, color='black', linewidth=1)
-    plt.axvline(np.pi / 2, color='red', linestyle='--', label=r"$\frac{\pi}{2}$")
-    plt.axvline(7 * np.pi / 6, color='red', linestyle='--', label=r"$\frac{7\pi}{6}$")
-    plt.axvline(11 * np.pi / 6, color='red', linestyle='--', label=r"$\frac{11\pi}{6}$")
+    plt.axvline(0, color='gray', linewidth=0.8)
 
-    # Título y etiquetas (cadena cruda para evitar invalid escape)
-    plt.title(r"Gráfica de $2\sin^2(x) - \sin(x) - 1 = 0$", fontsize=16)
-    plt.xlabel("x", fontsize=12)
-    plt.ylabel("y", fontsize=12)
+    # Soluciones teóricas (en [0, 2π])
+    soluciones = [np.pi/2, 7*np.pi/6, 11*np.pi/6]
+    etiquetas = [r"$\frac{\pi}{2}$", r"$\frac{7\pi}{6}$", r"$\frac{11\pi}{6}$"]
 
-    plt.grid(True)
-    plt.legend()
-    plt.show()
+    # Marcar y anotar las soluciones
+    for x_sol, label in zip(soluciones, etiquetas):
+        plt.axvline(x_sol, color='crimson', linestyle='--', alpha=0.7)
+        plt.plot(x_sol, 0, 'ro', markersize=8)
+        plt.text(x_sol, 0.25, label, fontsize=13, color='crimson', ha='center')
 
-# Función para graficar las funciones trigonométricas secante, cosecante y cotangente
+    # Título y etiquetas
+    plt.title(r"Resolución gráfica de $2\sin^2(x) - \sin(x) - 1 = 0$", fontsize=16, pad=15)
+    plt.xlabel(r"$x$", fontsize=13)
+    plt.ylabel(r"$f(x)$", fontsize=13)
 
-def graficar_funciones_trigonometricasotras():
-    # Definir el rango de x, excluyendo puntos donde sin(x) y cos(x) son 0
-    x = np.linspace(-2 * np.pi, 2 * np.pi, 1000)
+    # Etiquetas personalizadas en el eje x
+    plt.xticks(
+        [0, np.pi/2, np.pi, 3*np.pi/2, 2*np.pi],
+        ['0', r'$\frac{\pi}{2}$', r'$\pi$', r'$\frac{3\pi}{2}$', r'$2\pi$']
+    )
 
-    # Definir las funciones secante, cosecante y tangente
-    def sec(x):
-        return 1 / np.cos(x)
-
-    def csc(x):
-        return 1 / np.sin(x)
-
-    def cot(x):
-        return 1/np.tan(x)
-
-    # Crear una figura con tres gráficos separados
-    plt.figure(figsize=(10, 12))
-
-    # Gráfico de sec(x)
-    plt.subplot(3, 1, 1)  # Primer subplot
-    plt.plot(x, sec(x), label=r"$\sec(x)$", color='blue', linewidth=2)
-    plt.axhline(0, color='black',linewidth=1)
-    plt.axvline(x=0, color='black',linewidth=1)
-    plt.ylim(-10, 10)
-    plt.title(r"Gráfica de $\sec(x)$", fontsize=16)
-    plt.xticks([-2 * np.pi, -3 * np.pi / 2, -np.pi, -np.pi / 2, 0, np.pi / 2, np.pi, 3 * np.pi / 2, 2 * np.pi],
-               [r'$-2\pi$', r'$-\frac{3\pi}{2}$', r'$-\pi$', r'$-\frac{\pi}{2}$', '0', r'$\frac{\pi}{2}$', r'$\pi$', r'$\frac{3\pi}{2}$', r'$2\pi$'])
-    plt.grid(True)
-    plt.legend()
-
-    # Gráfico de csc(x)
-    plt.subplot(3, 1, 2)  # Segundo subplot
-    plt.plot(x, csc(x), label=r"$\csc(x)$", color='green', linewidth=2)
-    plt.axhline(0, color='black',linewidth=1)
-    plt.axvline(x=0, color='black',linewidth=1)
-    plt.ylim(-10, 10)
-    plt.title(r"Gráfica de $\csc(x)$", fontsize=16)
-    plt.xticks([-2 * np.pi, -3 * np.pi / 2, -np.pi, -np.pi / 2, 0, np.pi / 2, np.pi, 3 * np.pi / 2, 2 * np.pi],
-               [r'$-2\pi$', r'$-\frac{3\pi}{2}$', r'$-\pi$', r'$-\frac{\pi}{2}$', '0', r'$\frac{\pi}{2}$', r'$\pi$', r'$\frac{3\pi}{2}$', r'$2\pi$'])
-    plt.grid(True)
-    plt.legend()
-
-    # Gráfico de cotan(x)
-    plt.subplot(3, 1, 3)  # Tercer subplot
-    plt.plot(x, cot(x), label=r"$\cot(x)$", color='purple', linewidth=2)
-    plt.axhline(0, color='black', linewidth=1)
-    plt.axvline(x=0, color='black', linewidth=1)
-    plt.ylim(-10, 10)
-    plt.title(r"Gráfica de $\cot(x)$", fontsize=16)
-    plt.xticks([-2 * np.pi, -3 * np.pi / 2, -np.pi, -np.pi / 2, 0, np.pi / 2, np.pi, 3 * np.pi / 2, 2 * np.pi],
-               [r'$-2\pi$', r'$-\frac{3\pi}{2}$', r'$-\pi$', r'$-\frac{\pi}{2}$', '0', r'$\frac{\pi}{2}$', r'$\pi$', r'$\frac{3\pi}{2}$', r'$2\pi$'])
-    plt.grid(True)
-    plt.legend()
-
-    # Ajustar el espacio entre subplots
-    plt.tight_layout()
+    # Mejorar la cuadrícula
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend(fontsize=12, loc='upper right')
+    plt.ylim(-2, 2)
+    plt.xlim(rango_x)
 
     # Mostrar la gráfica
-    plt.show()
-# Función para visualizar la identidad pitagórica
-
-def identidad_pitagorica(theta_deg):
-    # Convertir el ángulo a radianes
-    theta_rad = np.deg2rad(theta_deg)
-
-    # Calcular el seno y el coseno
-    seno = np.sin(theta_rad)
-    coseno = np.cos(theta_rad)
-    identidad = seno**2 + coseno**2
-
-    # Limpiar la figura
-    plt.figure(figsize=(6, 6))
-
-    # Dibujar el círculo unitario
-    circle = plt.Circle((0, 0), 1, color='lightblue', fill=False)
-    plt.gca().add_patch(circle)
-
-    # Dibujar el triángulo
-    plt.plot([0, coseno], [0, seno], 'k-', lw=2)
-    plt.plot([coseno, coseno], [0, seno], 'k--')
-    plt.plot([0, coseno], [0, 0], 'k--')
-
-    # Anotar los valores de seno, coseno y la identidad
-    plt.text(0.1, 0.9, f"$\\sin^2(\\theta) + \\cos^2(\\theta) = {identidad:.2f}$", fontsize=12, color='red')
-    plt.text(0.5, seno / 2, f"$\\sin(\\theta) = {seno:.2f}$", fontsize=12, color='blue')
-    plt.text(coseno / 2, -0.1, f"$\\cos(\\theta) = {coseno:.2f}$", fontsize=12, color='green')
-
-    # Ajustes de la gráfica
-    plt.xlim(-1.5, 1.5)
-    plt.ylim(-1.5, 1.5)
-    plt.gca().set_aspect('equal')
-    plt.grid(True)
-    plt.axhline(0, color='black',linewidth=1)
-    plt.axvline(0, color='black',linewidth=1)
-    plt.title(f"Identidad Pitagórica para $\\theta = {theta_deg}^\\circ$")
-    plt.show()
-
-# Función para dibujar los dos triángulos rectángulos y las fracciones al lado
-def plot_two_triangles(angle_radians, hypotenuse1, hypotenuse2):
-    # Cálculo de los lados para ambos triángulos
-    opposite1 = np.sin(angle_radians) * hypotenuse1
-    adjacent1 = np.cos(angle_radians) * hypotenuse1
-    
-    opposite2 = np.sin(angle_radians) * hypotenuse2
-    adjacent2 = np.cos(angle_radians) * hypotenuse2
-    
-    # Configuración de las subgráficas
-    fig, ax = plt.subplots(1, 2, figsize=(12, 8))
-    
-    # Subgráfico 1: Dibujar los triángulos
-    ax[0].plot([0, adjacent1], [0, 0], 'r', lw=3, label='CA')
-    ax[0].plot([adjacent1, adjacent1], [0, opposite1], 'b', lw=3, label='CO')
-    ax[0].plot([0, adjacent1], [0, opposite1], 'g', lw=3, label='H')
-    
-    ax[0].plot([0, adjacent2], [0, 0], 'orange', lw=3, label='CA ')
-    ax[0].plot([adjacent2, adjacent2], [0, opposite2], 'purple', lw=3, label='CO')
-    ax[0].plot([0, adjacent2], [0, opposite2], 'pink', lw=3, label='H')
-    
-    ax[0].set_xlim(-0.5, max(adjacent1, adjacent2) + 0.5)
-    ax[0].set_ylim(-0.5, max(opposite1, opposite2) + 0.5)
-    ax[0].set_aspect('equal')
-    ax[0].grid(True)
-    ax[0].legend()
-    ax[0].set_title("Dos triángulos con diferentes hipotenusas")
-    
-    # Subgráfico 2: Mostrar las fracciones y cocientes de coseno y seno
-    ax[1].axis('off')  # Ocultamos los ejes
-    fraction_of_pi = angle_radians / np.pi  # Convertir ángulo a múltiplos de π
-    
-    # Cálculo del cociente de coseno (adyacente / hipotenusa)
-    cos_cociente1 = adjacent1 / hypotenuse1
-    cos_cociente2 = adjacent2 / hypotenuse2
-    
-    # Cálculo del cociente de seno (opuesto / hipotenusa)
-    sin_cociente1 = opposite1 / hypotenuse1
-    sin_cociente2 = opposite2 / hypotenuse2
-    
-    # Texto de coseno en una sola línea con colores
-    ax[1].text(0.1, 0.7, f"cos({fraction_of_pi:.2f}π) =", fontsize=14, color='black')
-    ax[1].text(0.4, 0.7, f"{adjacent1:.2f}", fontsize=14, color='red')
-    ax[1].text(0.5, 0.7, "/", fontsize=14, color='black')
-    ax[1].text(0.55, 0.7, f"{hypotenuse1:.2f}", fontsize=14, color='green')
-    ax[1].text(0.65, 0.7, f"= {cos_cociente1:.2f}=", fontsize=14, color='black')
-    
-    ax[1].text(0.9, 0.7, f"{adjacent2:.2f}", fontsize=14, color='orange')
-    ax[1].text(1., 0.7, "/", fontsize=14, color='black')
-    ax[1].text(1.01, 0.7, f"{hypotenuse2:.2f}", fontsize=14, color='pink')
-    ax[1].text(1.11, 0.7, f"= {cos_cociente2:.2f}", fontsize=14, color='black')
-    
-    # Texto de seno en una sola línea con colores
-    ax[1].text(0.1, 0.6, f"sin({fraction_of_pi:.2f}π) =", fontsize=14, color='black')
-    ax[1].text(0.4, 0.6, f"{opposite1:.2f}", fontsize=14, color='blue')
-    ax[1].text(0.5, 0.6, "/", fontsize=14, coanalizar_diferencia_de_cuboslor='black')
-    ax[1].text(0.55, 0.6, f"{hypotenuse1:.2f}", fontsize=14, color='green')
-    ax[1].text(0.65, 0.6, f"= {sin_cociente1:.2f}=", fontsize=14, color='black')
-    
-    ax[1].text(0.9, 0.6, f"{opposite2:.2f}", fontsize=14, color='purple')
-    ax[1].text(1., 0.6, "/", fontsize=14, color='black')
-    ax[1].text(1.01, 0.6, f"{hypotenuse2:.2f}", fontsize=14, color='pink')
-    ax[1].text(1.11, 0.6, f"= {sin_cociente2:.2f}", fontsize=14, color='black')
-    
-    plt.show()
-
-# Función principal para generar la animación de "Los Pollitos"
-def los_pollitos_animation(rate=22050, duration=0.5, output_file='los_pollitos_animation.mp4'):
-    """
-    Genera una animación de la superposición de ondas sinusoidales correspondientes
-    a la melodía de 'Los Pollitos' y la guarda como archivo .mp4.
-
-    Parámetros:
-    - rate: Tasa de muestreo en Hz (por defecto 22050)
-    - duration: Duración de cada nota en segundos (por defecto 0.5)
-    - output_file: Nombre del archivo de salida (por defecto 'los_pollitos_animation.mp4')
-    """
-    # Eje de tiempo
-    t = np.linspace(0, duration, int(rate * duration), endpoint=False)
-
-    # Frecuencias de las notas musicales (en Hz)
-    notes = {
-        'C': 261.63,  # Do
-        'D': 293.66,  # Re
-        'E': 329.63,  # Mi
-        'F': 349.23,  # Fa
-        'G': 392.00,  # Sol
-        'A': 440.00,  # La
-        'B': 493.88,  # Si
-        'C_high': 523.25  # Do (una octava más alta)
-    }
-
-    # Función para generar una onda sinusoidal para una nota
-    def generate_wave(note):
-        frequency = notes[note]
-        wave = 0.5 * np.sin(2 * np.pi * frequency * t)  # Amplitud de 0.5 para evitar saturación
-        return wave
-
-    # Melodía de "Los Pollitos" (simplificada)
-    melody = [
-        'E', 'E', 'F', 'G', 'G', 'F', 'E', 'D',  # "Los pollitos dicen pío, pío, pío"
-        'C', 'C', 'D', 'E', 'E', 'D', 'D',       # "cuando tienen hambre"
-        'E', 'E', 'F', 'G', 'G', 'F', 'E', 'D',  # "y cuando tienen frío"
-        'C', 'C', 'D', 'E', 'D', 'C'             # "La mamá les busca el maíz y el trigo"
-    ]
-
-    # Generar las ondas para cada nota en la melodía
-    waves = [generate_wave(note) for note in melody]
-
-    # Crear la figura para la animación
-    fig, ax = plt.subplots(figsize=(10, 6))
-    line, = ax.plot([], [], lw=2)
-
-    # Configuración de los ejes
-    ax.set_xlim(0, duration)
-    ax.set_ylim(-1, 1)
-    ax.set_xlabel("Time (s)")
-    ax.set_ylabel("Amplitude")
-    ax.set_title("Superposición de las ondas sinusoidales de 'Los Pollitos'")
-
-    # Inicialización de la gráfica
-    def init():
-        line.set_data([], [])
-        return line,
-
-    # Función para actualizar la animación
-    def update(frame):
-        # Superponer las ondas de las primeras `frame+1` notas
-        current_wave = np.sum(waves[:frame+1], axis=0) / (frame + 1)  # Normalizar la amplitud
-        line.set_data(t, current_wave)
-        return line,
-
-    # Crear la animación
-    ani = FuncAnimation(fig, update, frames=len(waves), init_func=init, blit=True, interval=500)
-
-    # Guardar la animación como archivo .mp4
-    ani.save(output_file, writer='ffmpeg')
-
-    # Mostrar la animación
     plt.show()
 
 # ---------------------------------------------------------------
@@ -1314,3 +1367,8 @@ def interactive_efficiency(default_n=500, default_T=100, max_n=10000):
     out = interactive_output(plot_efficiency, {'n_max': n_slider, 'T': T_slider})
 
     display(ui, out)
+
+
+
+
+

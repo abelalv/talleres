@@ -6,7 +6,7 @@ from ipywidgets import interact, IntSlider, FloatSlider
 def cardiac_signal(n, S0, alpha):
     return S0 * np.sin(alpha / n)
 
-# Función para graficar
+# Función para graficar (solo dibuja)
 def plot_sequence(S0=1.0, alpha=1.0, N=100):
     ns = np.arange(1, N + 1)
     signals = cardiac_signal(ns, S0, alpha)
@@ -21,10 +21,11 @@ def plot_sequence(S0=1.0, alpha=1.0, N=100):
     plt.legend()
     plt.show()
 
-# Widget interactivo con 3 sliders: S0, alpha y N
-interact(
-    plot_sequence,
-    S0=FloatSlider(value=1.0, min=0.1, max=3.0, step=0.1, description="S₀"),
-    alpha=FloatSlider(value=1.0, min=0.1, max=5.0, step=0.1, description="α"),
-    N=IntSlider(value=100, min=10, max=300, step=10, description="N")
-)
+# Función que crea el widget interactivo
+def plot_sequence_widget():
+    return interact(
+        plot_sequence,
+        S0=FloatSlider(value=1.0, min=0.1, max=3.0, step=0.1, description="S₀"),
+        alpha=FloatSlider(value=1.0, min=0.1, max=5.0, step=0.1, description="α"),
+        N=IntSlider(value=100, min=10, max=300, step=10, description="N")
+    )
